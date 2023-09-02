@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:food_express/constant/constant.dart';
 import 'package:food_express/pages/home/home.dart';
 import 'package:food_express/pages/confirm_order_add_address/add_new_address.dart';
+import 'package:flutter_paystack/flutter_paystack.dart';
+import 'package:paystack_sdk/paystack_sdk.dart';
+import 'package:paystack_standard/paystack_standard.dart';
 
 class ConfirmOrder extends StatefulWidget {
   @override
@@ -681,6 +684,40 @@ class _ConfirmOrderState extends State<ConfirmOrder> {
             ),
           ),
           // Mastercard End
+          // Paystack Start
+          ElevatedButton(
+            onPressed: () {
+              // Replace with the actual amount and email of the customer
+              var initializeTransaction = PaystackTransaction(
+                amount: 100000, // amount in kobo (NGN 1000)
+                email: 'customer@example.com',
+              );
+
+              PaystackSdk.chargeCard(context, initializeTransaction,
+                  (response) {
+                // Handle the payment response here
+                if (response.status) {
+                  // Payment was successful
+                  print('Payment was successful');
+                } else {
+                  // Payment failed
+                  print('Payment failed: ${response.message}');
+                }
+              });
+            },
+            child: Text('Pay with Paystack'),
+          ),
+          GestureDetector(
+            onTap: () {
+              PaystackStandard(context).checkout(
+                  checkoutUrl: "https://checkout.paystack.com/c3inl5xppg4z5qo");
+            },
+            child: Text(
+              "Pay 1000N",
+              style: Theme.of(context).textTheme.headlineMedium,
+            ),
+          ),
+          // Paystack End
         ],
       ),
     );
